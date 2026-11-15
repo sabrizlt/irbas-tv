@@ -1,0 +1,9 @@
+# compilazione
+build/
+.gradle/
+local.properties
+*.apk
+# chiavi di firma: mai nel repository
+*.jks
+*.keystore
+.DS_Store

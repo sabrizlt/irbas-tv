@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irbas TV — la TV semplice, con un assistente</title>
+<meta name="description" content="Irbas TV: una schermata semplice per Android TV e Google TV, senza pubblicità, con il telecomando sul telefono.">
+<style>
+:root{--bg:#020306;--text:#f5f8fd;--muted:rgba(230,236,247,.68);--ice:#8be9ff;--cyan:#4fc3ff;--glass:rgba(255,255,255,.06);--edge:rgba(255,255,255,.13)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.6;
+ background:radial-gradient(50% 35% at 12% 0%,rgba(39,211,240,.20),transparent 70%),radial-gradient(55% 40% at 100% 100%,rgba(122,77,255,.20),transparent 70%),var(--bg);background-attachment:fixed}
+main{max-width:900px;margin:0 auto;padding:56px 22px 80px}
+h1{font-size:clamp(38px,6vw,60px);line-height:1.05;margin:0 0 14px;letter-spacing:-.5px}
+h1 span{background:linear-gradient(90deg,#fff,var(--ice));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:26px;margin:46px 0 12px}
+p,li{color:var(--muted);font-size:17px}
+.lead{font-size:20px;max-width:640px}
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:24px;padding:24px 26px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:22px}
+.grid h3{margin:0 0 6px;font-size:18px;color:var(--text)}
+.grid p{margin:0;font-size:15px}
+.buttons{display:flex;flex-wrap:wrap;gap:12px;margin:26px 0 8px}
+a.btn{display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:999px;font-weight:700;text-decoration:none;font-size:18px}
+a.primary{background:linear-gradient(90deg,#fff,var(--ice));color:#06101c}
+a.secondary{background:var(--glass);border:1px solid var(--edge);color:var(--text)}
+ol{padding-left:22px}ol li{margin:8px 0}
+b,strong{color:var(--text)}
+code{background:rgba(255,255,255,.08);padding:2px 8px;border-radius:8px;color:var(--ice);font-size:.95em;word-break:break-all}
+.note{font-size:14px;color:rgba(230,236,247,.5)}
+.tag{display:inline-block;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--ice);font-weight:700;margin-bottom:8px}
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">Irbas TV</div>
+  <h1>La TV <span>semplice</span>, con un assistente.</h1>
+  <p class="lead">Una schermata pulita per Android TV e Google TV: niente pubblicità, solo le tue app, il tasto Home che riporta sempre lì e un telecomando bellissimo sul telefono. Perfetta anche per i genitori.</p>
+  <div class="buttons">
+    <a class="btn primary" id="apk" href="#">⬇ Scarica Irbas TV</a>
+    <a class="btn secondary" id="win" href="#">Installatore per Windows</a>
+  </div>
+  <p class="note">Funziona su TV e chiavette con <b>Android TV</b> o <b>Google TV</b> (Android 8 o più recente). Non funziona su Samsung (Tizen), LG (webOS) né su Fire TV.</p>
+
+  <div class="grid">
+    <div class="glass"><h3>Semplice</h3><p>Una sola schermata con le app che usi, grandi e chiare. Nessun menu in cui perdersi.</p></div>
+    <div class="glass"><h3>Telecomando sul telefono</h3><p>Inquadri il QR sulla TV e il telefono diventa un telecomando con touchpad, app e tastiera.</p></div>
+    <div class="glass"><h3>Parli e fa</h3><p>Col microfono del telecomando: «apri Netflix», «metti YouTube». Con un server Irbas risponde anche alle domande.</p></div>
+  </div>
+
+  <h2>Installazione col computer Windows</h2>
+  <div class="glass">
+    <ol>
+      <li>Scarica l'<a href="#" id="win2" style="color:var(--ice)">installatore per Windows</a>, apri lo zip e <b>estrai tutti i file</b> in una cartella.</li>
+      <li>Doppio clic su <b>Installa-Irbas-TV.bat</b>. Si apre una pagina nel browser: da lì fai tutto con i pulsanti.</li>
+      <li>La pagina ti spiega come attivare il <b>Debug USB</b> sulla TV, la trova da sola sulla Wi-Fi e installa Irbas TV.</li>
+      <li>Sulla TV, quando compare «Consentire il debug?», scegli <b>Consenti sempre</b>.</li>
+    </ol>
+    <p class="note">Se Windows mostra «PC protetto da Windows», premi <b>Ulteriori informazioni › Esegui comunque</b>. Per tornare alla TV com'era: doppio clic su <b>Ripristina-TV-originale.bat</b>. Niente viene cancellato.</p>
+  </div>
+
+  <h2>Oppure: senza computer</h2>
+  <div class="glass">
+    <ol>
+      <li>Sulla TV apri il <b>Play Store</b>, cerca <b>Downloader</b> (icona arancione) e installalo.</li>
+      <li>Apri Downloader e, nella casella in alto, scrivi l'indirizzo di questa pagina: <code id="here">…</code> e premi <b>Vai</b>.</li>
+      <li>Si apre questa pagina sulla TV: premi <b>Scarica Irbas TV</b>. Se Downloader chiede il permesso di installare app, attivalo e torna indietro.</li>
+      <li>Premi <b>Installa</b>, poi <b>Apri</b>. Irbas TV ti guida: microfono, tasto Home e telecomando sul telefono, un passo alla volta.</li>
+    </ol>
+    <p class="note">Su alcune TV (per esempio quelle degli operatori) il tasto Home può tornare alla schermata originale: in quel caso usa l'installazione col computer qui sopra.</p>
+  </div>
+
+  <h2>Il telecomando sul telefono</h2>
+  <div class="glass">
+    <ol>
+      <li>Sulla TV, in alto, premi <b>Telefono</b>: compaiono un QR e un codice di 6 cifre.</li>
+      <li>Inquadra il QR con la fotocamera del telefono (stessa Wi-Fi della TV): si apre il telecomando, già collegato.</li>
+      <li>Per averlo come un'app: su iPhone <b>Condividi › Aggiungi alla schermata Home</b>, su Android <b>⋮ › Aggiungi a schermata Home</b>.</li>
+    </ol>
+  </div>
+
+  <p class="note" style="margin-top:40px">Irbas TV è un progetto personale e gratuito. Usa solo i banner e le app già installate sulla tua TV; i marchi delle app appartengono ai rispettivi proprietari.</p>
+</main>
+<script>
+  // l'indirizzo dei download dipende da dove è pubblicata la pagina (utente.github.io/progetto)
+  const user = location.hostname.split('.')[0];
+  const repo = location.pathname.split('/').filter(Boolean)[0] || 'irbas-tv';
+  const base = 'https://github.com/' + user + '/' + repo + '/releases/latest/download/';
+  document.getElementById('apk').href = base + 'IrbasTV.apk';
+  document.getElementById('win').href = base + 'Installa-Irbas-TV-Windows.zip';
+  document.getElementById('win2').href = base + 'Installa-Irbas-TV-Windows.zip';
+  document.getElementById('here').textContent = location.host + location.pathname.replace(/\/$/, '');
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Irbas TV">
+<meta name="theme-color" content="#020306">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon.png">
+<title>Irbas TV · Telecomando</title>
+<style>
+:root{--bg:#020306;--text:#f5f8fd;--muted:rgba(230,236,247,.62);--ice:#8be9ff;--cyan:#4fc3ff;--glass:rgba(255,255,255,.07);--edge:rgba(255,255,255,.14)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{min-height:100vh;padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 28px);
+ background:radial-gradient(60% 40% at 10% 0%,rgba(39,211,240,.22),transparent 70%),radial-gradient(60% 45% at 100% 100%,rgba(122,77,255,.22),transparent 70%),var(--bg);background-attachment:fixed}
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:24px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+h1{font-size:30px;margin:0;font-weight:700;letter-spacing:.2px}
+.status{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);margin-top:4px}
+.dot{width:8px;height:8px;border-radius:50%;background:#63e6a0}.dot.off{background:#ffcc66}
+.power{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:22px;color:#ff6b6b}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:active{transform:scale(.94)}
+.section{display:flex;justify-content:space-between;align-items:baseline;margin:6px 2px 10px}
+.section h2{font-size:17px;margin:0}.section button{color:var(--ice);font-weight:600;font-size:14px}
+.apps{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}.apps::-webkit-scrollbar{display:none}
+.app{flex:0 0 150px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;position:relative;background:var(--glass);border:1px solid var(--edge)}
+.app img{width:100%;height:100%;object-fit:cover;display:block}
+.app span{position:absolute;inset:0;display:grid;place-items:center;font-size:13px;font-weight:600;padding:6px;text-align:center}
+.pad{height:250px;margin:8px 0 16px;position:relative;touch-action:none;display:grid;place-items:center;color:rgba(255,255,255,.3);font-size:13px;text-align:center;overflow:hidden;border-radius:30px}
+.pad .glow{position:absolute;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(79,195,255,.55),transparent 70%);transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .25s}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.key{height:72px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:22px}
+.key small{font-size:11px;color:var(--muted)}
+.row{display:flex;gap:10px;margin:16px 0 12px}
+input{flex:1;height:50px;border-radius:25px;padding:0 18px;font:inherit;color:var(--text);outline:none}
+.send{width:50px;height:50px;border-radius:50%;background:var(--ice);color:#000;font-size:20px;font-weight:700}
+.ask{width:100%;height:58px;border-radius:29px;background:linear-gradient(90deg,var(--ice),var(--cyan));color:#000;font-weight:700;font-size:16px}
+.msg{margin-top:12px;font-size:13px;color:var(--muted);text-align:center;min-height:18px}
+.hint{font-size:12px;color:rgba(255,255,255,.38);text-align:center;margin-top:16px;line-height:1.5}
+#pair{max-width:420px;margin:12vh auto 0;padding:26px;text-align:center}
+#pair h1{margin-bottom:10px}#pair p{color:var(--muted);line-height:1.5}
+#pin{width:100%;text-align:center;font-size:30px;letter-spacing:8px;margin:12px 0 16px;height:60px}
+#all{position:fixed;inset:0;background:rgba(2,3,6,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:calc(env(safe-area-inset-top) + 18px) 18px 30px;overflow:auto;display:none}
+#all .list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#all .list .app{flex:none;width:100%}
+#all p{font-size:12px;color:var(--muted);margin:6px 2px 0}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="pair" class="glass hidden">
+  <h1>Irbas TV</h1>
+  <p>Scrivi il codice di 6 cifre che vedi sulla TV, in <b>Irbas TV › Telefono</b>.</p>
+  <input id="pin" class="glass" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••">
+  <button class="ask" id="pairBtn">Collega</button>
+  <div class="msg" id="pairMsg"></div>
+</div>
+
+<main id="remote" class="hidden">
+  <header>
+    <div><h1>TV</h1><div class="status"><span class="dot" id="dot"></span><span id="status">Collegamento…</span></div></div>
+    <button class="power glass" id="power" aria-label="Accendi o spegni">⏻</button>
+  </header>
+
+  <div class="section"><h2>Le tue app</h2><button id="showAll">Tutte</button></div>
+  <div class="apps" id="apps"></div>
+
+  <div class="pad glass" id="pad"><div class="glow" id="glow"></div><div>☞<br>Scorri per muoverti · tocca per OK</div></div>
+
+  <div class="grid">
+    <button class="key glass" data-key="back">↩<small>Indietro</small></button>
+    <button class="key glass" data-key="home">⌂<small>Home</small></button>
+    <button class="key glass" data-key="playpause">⏯<small>Play</small></button>
+    <button class="key glass" data-key="voldown">−<small>Volume</small></button>
+    <button class="key glass" data-key="mute">🔇<small>Muto</small></button>
+    <button class="key glass" data-key="volup">+<small>Volume</small></button>
+  </div>
+
+  <div class="row">
+    <input id="text" class="glass" placeholder="Scrivi sulla TV o chiedi a Irbas" autocomplete="off">
+    <button class="send" id="type" aria-label="Scrivi sulla TV">↑</button>
+  </div>
+  <button class="ask" id="ask">Chiedi a Irbas</button>
+  <div class="msg" id="msg"></div>
+  <p class="hint">Per averlo come un'app: su iPhone <b>Condividi › Aggiungi alla schermata Home</b>, su Android <b>⋮ › Aggiungi a schermata Home</b>.<br>Per dettare, usa il microfono della tastiera del telefono.</p>
+</main>
+
+<div id="all">
+  <div class="section"><h2>Tutte le app</h2><button id="closeAll">Chiudi</button></div>
+  <div class="list" id="allList"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let pin = '';
+try {
+  const fromLink = new URLSearchParams(location.hash.slice(1)).get('pin');
+  if (fromLink) { localStorage.setItem('pin', fromLink); history.replaceState(null, '', '/'); }
+  pin = localStorage.getItem('pin') || '';
+} catch (e) { pin = new URLSearchParams(location.hash.slice(1)).get('pin') || ''; }
+
+async function api(path, body) {
+  const options = { method: body ? 'POST' : 'GET', headers: { 'X-TV-Pin': pin } };
+  if (body) { options.headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(body); }
+  const response = await fetch(path, options);
+  const data = await response.json().catch(() => ({}));
+  if (response.status === 401) { showPair('Il codice non è giusto: controllalo sulla TV.'); throw new Error('codice'); }
+  if (!response.ok) throw new Error(data.error || ('Errore ' + response.status));
+  return data;
+}
+
+function say(text) { $('msg').textContent = text || ''; }
+function buzz(ms) { if (navigator.vibrate) navigator.vibrate(ms || 8); }
+
+function showPair(message) {
+  $('remote').classList.add('hidden'); $('pair').classList.remove('hidden');
+  $('pairMsg').textContent = message || '';
+}
+
+async function start() {
+  if (!pin) return showPair();
+  try {
+    const state = await api('/tv/state');
+    $('pair').classList.add('hidden'); $('remote').classList.remove('hidden');
+    $('status').textContent = 'Collegata' + (state.now ? ' · ora: ' + state.now : '');
+    $('dot').classList.remove('off');
+    render(state.apps || []);
+    if (!state.adb && !state.accessibility) say('Sulla TV attiva «Irbas TV» in Impostazioni › Accessibilità per usare le frecce.');
+  } catch (e) {
+    if (e.message !== 'codice') { $('remote').classList.remove('hidden'); $('status').textContent = 'TV non raggiungibile'; $('dot').classList.add('off'); }
+  }
+}
+
+function tile(app, closeAfter) {
+  const b = document.createElement('button');
+  b.className = 'app';
+  const label = document.createElement('span'); label.textContent = app.label;
+  const img = document.createElement('img');
+  img.alt = app.label; img.loading = 'lazy';
+  img.src = '/tv/banner?pkg=' + encodeURIComponent(app.pkg) + '&pin=' + encodeURIComponent(pin);
+  img.onload = () => label.remove();
+  img.onerror = () => img.remove();
+  b.append(img, label);
+  b.onclick = async () => {
+    buzz(10);
+    if (closeAfter) $('all').style.display = 'none';
+    try { await api('/tv/open', { pkg: app.pkg }); $('status').textContent = 'Collegata · ora: ' + app.label; say(''); }
+    catch (e) { say(e.message); }
+  };
+  return b;
+}
+
+function render(apps) {
+  const favorites = apps.filter(a => a.favorite);
+  const strip = $('apps'); strip.innerHTML = '';
+  (favorites.length ? favorites : apps.slice(0, 8)).forEach(a => strip.append(tile(a, false)));
+  const list = $('allList'); list.innerHTML = '';
+  apps.forEach(a => { const box = document.createElement('div'); box.append(tile(a, true)); const p = document.createElement('p'); p.textContent = a.label; box.append(p); list.append(box); });
+}
+
+async function key(name) {
+  try { await api('/tv/key', { key: name }); say(''); } catch (e) { say(e.message); }
+}
+
+document.querySelectorAll('[data-key]').forEach(b => b.onclick = () => { buzz(10); key(b.dataset.key); });
+$('power').onclick = async () => { buzz(25); try { await api('/tv/power', {}); say(''); } catch (e) { say(e.message); } };
+$('showAll').onclick = () => { $('all').style.display = 'block'; };
+$('closeAll').onclick = () => { $('all').style.display = 'none'; };
+$('type').onclick = async () => {
+  const text = $('text').value.trim(); if (!text) return;
+  try { await api('/tv/text', { text }); $('text').value = ''; say('Scritto sulla TV.'); } catch (e) { say(e.message); }
+};
+$('ask').onclick = async () => {
+  const text = $('text').value.trim();
+  if (!text) { say('Scrivi (o detta col microfono della tastiera) cosa chiedere a Irbas.'); $('text').focus(); return; }
+  try { await api('/tv/ask', { text }); $('text').value = ''; say('«' + text + '» — la risposta compare sulla TV.'); } catch (e) { say(e.message); }
+};
+$('pairBtn').onclick = () => {
+  const value = $('pin').value.replace(/\D/g, '');
+  if (value.length !== 6) { $('pairMsg').textContent = 'Il codice ha 6 cifre.'; return; }
+  pin = value; try { localStorage.setItem('pin', pin); } catch (e) {}
+  start();
+};
+
+// il touchpad: un passo ogni 50 pixel, tocco = OK
+const pad = $('pad'), glow = $('glow');
+let origin = null, moved = false;
+pad.addEventListener('pointerdown', e => {
+  origin = { x: e.clientX, y: e.clientY }; moved = false;
+  pad.setPointerCapture(e.pointerId); place(e); glow.style.opacity = 1;
+});
+pad.addEventListener('pointermove', e => {
+  if (!origin) return; place(e);
+  const dx = e.clientX - origin.x, dy = e.clientY - origin.y, step = 50;
+  if (Math.abs(dx) > step && Math.abs(dx) > Math.abs(dy)) { key(dx > 0 ? 'right' : 'left'); origin = { x: e.clientX, y: e.clientY }; moved = true; buzz(6); }
+  else if (Math.abs(dy) > step && Math.abs(dy) > Math.abs(dx)) { key(dy > 0 ? 'down' : 'up'); origin = { x: e.clientX, y: e.clientY }; moved = true; buzz(6); }
+});
+pad.addEventListener('pointerup', () => { if (origin && !moved) { key('ok'); buzz(15); } origin = null; glow.style.opacity = 0; });
+pad.addEventListener('pointercancel', () => { origin = null; glow.style.opacity = 0; });
+function place(e) { const r = pad.getBoundingClientRect(); glow.style.left = (e.clientX - r.left) + 'px'; glow.style.top = (e.clientY - r.top) + 'px'; }
+
+start();
+setInterval(() => { if (!$('remote').classList.contains('hidden')) api('/tv/state').then(s => { $('status').textContent = 'Collegata' + (s.now ? ' · ora: ' + s.now : ''); }).catch(() => {}); }, 15000);
+</script>
+</body>
+</html>

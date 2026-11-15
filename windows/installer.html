@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installa Irbas TV</title>
+<style>
+:root{--bg:#020306;--text:#f5f8fd;--muted:rgba(230,236,247,.66);--ice:#8be9ff;--cyan:#4fc3ff;--glass:rgba(255,255,255,.06);--edge:rgba(255,255,255,.14);--green:#63e6a0;--amber:#ffcc66}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:"Segoe UI",-apple-system,Roboto,sans-serif;
+ background:radial-gradient(50% 40% at 10% 0%,rgba(39,211,240,.22),transparent 70%),radial-gradient(55% 45% at 100% 100%,rgba(122,77,255,.22),transparent 70%),var(--bg)}
+main{max-width:760px;margin:0 auto;padding:46px 24px 60px}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.brand b{font-size:22px;letter-spacing:.3px}
+h1{font-size:36px;margin:0 0 6px;line-height:1.1}
+.sub{color:var(--muted);font-size:17px;margin:0 0 26px}
+.steps{display:flex;gap:8px;margin-bottom:22px}
+.steps span{flex:1;height:5px;border-radius:5px;background:rgba(255,255,255,.12)}
+.steps span.on{background:linear-gradient(90deg,var(--ice),var(--cyan))}
+.card{background:var(--glass);border:1px solid var(--edge);border-radius:26px;padding:30px;backdrop-filter:blur(22px);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.card h2{margin:0 0 10px;font-size:24px}
+.card p,.card li{color:var(--muted);font-size:16px;line-height:1.6}
+ol{padding-left:22px;margin:10px 0 0}li{margin:8px 0}
+b{color:var(--text)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;align-items:center}
+button{font:inherit;cursor:pointer;border:0;border-radius:999px;padding:14px 26px;font-size:16px;font-weight:700}
+button.primary{background:linear-gradient(90deg,#fff,var(--ice));color:#06101c}
+button.ghost{background:var(--glass);border:1px solid var(--edge);color:var(--text)}
+button:disabled{opacity:.5;cursor:default}
+input{font:inherit;font-size:18px;padding:13px 18px;border-radius:999px;border:1px solid var(--edge);background:rgba(255,255,255,.06);color:var(--text);outline:none;width:240px}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.tv{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid var(--edge)}
+.tv span{font-size:17px}
+.status{margin-top:16px;font-size:15px;color:var(--muted);min-height:22px}
+.status.err{color:#ff8a8a}.status.ok{color:var(--green)}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:var(--ice);border-radius:50%;animation:s 1s linear infinite;vertical-align:-3px;margin-right:8px}
+@keyframes s{to{transform:rotate(360deg)}}
+label.check{display:flex;gap:10px;align-items:center;margin-top:16px;color:var(--text);font-size:16px}
+label.check input{width:20px;height:20px}
+.done{font-size:48px}
+.foot{margin-top:26px;font-size:13px;color:rgba(230,236,247,.45);text-align:center}
+.foot a{color:var(--ice);cursor:pointer}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">
+    <svg width="34" height="34" viewBox="0 0 48 48" aria-hidden="true"><path d="M33.97,6.01 A20.57,20.57 0 0,1 33.97,41.99" stroke="#4CEDFB" stroke-width="2.4" fill="none"/><path d="M14.03,41.99 A20.57,20.57 0 0,1 14.03,6.01" stroke="#4CEDFB" stroke-width="2.4" fill="none"/><rect x="20.3" y="2" width="7.4" height="44" rx="3.7" fill="#C8F9FE"/></svg>
+    <b>Irbas TV</b>
+  </div>
+  <h1 id="title">Installa Irbas TV</h1>
+  <p class="sub" id="subtitle">Il PC e la TV devono essere sulla stessa Wi-Fi. Ci vogliono un paio di minuti.</p>
+  <div class="steps" id="bar"><span></span><span></span><span></span><span></span></div>
+
+  <!-- 1. preparare la TV -->
+  <section class="card" id="s1">
+    <h2>1. Prepara la TV</h2>
+    <p>Una cosa da fare una volta sola, col telecomando:</p>
+    <ol>
+      <li>Apri <b>Impostazioni › Preferenze dispositivo › Info</b> (su Google TV: <b>Impostazioni › Sistema › Info</b>).</li>
+      <li>Scendi su <b>Build</b> (o «Build del sistema operativo») e premilo <b>7 volte</b>, finché compare «Ora sei uno sviluppatore».</li>
+      <li>Torna indietro, apri <b>Opzioni sviluppatore</b> e attiva <b>Debug USB</b>. Se c'è anche <b>Debug di rete</b> o <b>Debug ADB in rete</b>, attiva pure quello.</li>
+    </ol>
+    <div class="actions"><button class="primary" id="ready">Fatto, andiamo avanti</button></div>
+    <div class="status" id="st1"></div>
+  </section>
+
+  <!-- 2. trovare la TV -->
+  <section class="card hidden" id="s2">
+    <h2>2. Trova la TV</h2>
+    <p>Cerco le TV con il debug attivo sulla tua Wi-Fi.</p>
+    <div class="list" id="found"></div>
+    <div class="actions">
+      <button class="ghost" id="rescan">Cerca di nuovo</button>
+      <input id="manual" placeholder="oppure scrivi l'indirizzo" inputmode="decimal">
+      <button class="primary" id="useManual">Usa questo</button>
+    </div>
+    <p style="font-size:14px;margin-top:14px">L'indirizzo della TV è in <b>Impostazioni › Rete e Internet ›</b> la tua Wi-Fi (es. 192.168.1.50).</p>
+    <div class="status" id="st2"></div>
+  </section>
+
+  <!-- 3. autorizzare -->
+  <section class="card hidden" id="s3">
+    <h2>3. Autorizza il PC sulla TV</h2>
+    <p>Sulla TV compare <b>«Consentire il debug USB?»</b>. Col telecomando spunta <b>Consenti sempre da questo computer</b> e premi <b>OK</b>.</p>
+    <div class="status" id="st3"><span class="spin"></span>Aspetto la conferma sulla TV…</div>
+  </section>
+
+  <!-- 4. installare -->
+  <section class="card hidden" id="s4">
+    <h2>4. Installa</h2>
+    <p id="tvname">TV collegata.</p>
+    <label class="check"><input type="checkbox" id="hide" checked> Spegni la schermata originale della TV (il tasto Home porterà sempre a Irbas TV)</label>
+    <div class="actions"><button class="primary" id="install">Installa Irbas TV</button></div>
+    <div class="status" id="st4"></div>
+  </section>
+
+  <!-- fatto -->
+  <section class="card hidden" id="s5">
+    <div class="done">✓</div>
+    <h2>Irbas TV è pronta</h2>
+    <p>Guarda la TV: c'è la nuova schermata. Per il <b>telecomando sul telefono</b>, sulla TV premi <b>Telefono</b> in alto e inquadra il QR con la fotocamera.</p>
+    <p>Puoi chiudere questa pagina.</p>
+    <div class="actions"><button class="ghost" id="close">Chiudi</button></div>
+  </section>
+
+  <!-- ripristino -->
+  <section class="card hidden" id="sr">
+    <h2>Rimetti la TV com'era</h2>
+    <p>Riaccende la schermata originale della TV e toglie il tasto Home di Irbas. Niente viene cancellato.</p>
+    <div class="actions">
+      <input id="rip" placeholder="indirizzo della TV" inputmode="decimal">
+      <button class="primary" id="restore">Ripristina</button>
+    </div>
+    <div class="status" id="str"></div>
+  </section>
+
+  <p class="foot">Hai già Irbas TV e vuoi tornare indietro? <a id="toRestore">Ripristina la TV originale</a></p>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+let tv = localStorage.getItem('tv') || '';
+
+async function api(path, body) {
+  const r = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
+  const data = await r.json();
+  if (!data.ok) throw new Error(data.error || 'Qualcosa non è andato');
+  return data;
+}
+function show(id, step) {
+  ['s1','s2','s3','s4','s5','sr'].forEach(s => $(s).classList.toggle('hidden', s !== id));
+  document.querySelectorAll('#bar span').forEach((b, i) => b.classList.toggle('on', i < step));
+}
+function status(id, text, kind, spin) {
+  const el = $(id);
+  el.className = 'status' + (kind ? ' ' + kind : '');
+  el.innerHTML = (spin ? '<span class="spin"></span>' : '') + text;
+}
+
+$('ready').onclick = async () => {
+  $('ready').disabled = true;
+  status('st1', 'Preparo gli strumenti e scarico Irbas TV (la prima volta ci mette un po\')…', '', true);
+  try { await api('/api/prepare'); show('s2', 2); scan(); }
+  catch (e) { status('st1', e.message, 'err'); }
+  $('ready').disabled = false;
+};
+
+async function scan() {
+  $('found').innerHTML = '';
+  status('st2', 'Cerco sulla Wi-Fi…', '', true);
+  try {
+    const r = await api('/api/scan');
+    const ips = Array.isArray(r.ips) ? r.ips : (r.ips ? [r.ips] : []);
+    if (!ips.length) { status('st2', 'Non trovo nessuna TV con il debug attivo. Controlla il passo 1, oppure scrivi l\'indirizzo qui sopra.', 'err'); return; }
+    status('st2', ips.length === 1 ? 'Trovata!' : 'Ne ho trovate ' + ips.length + ': scegli la tua.', 'ok');
+    ips.forEach(ip => {
+      const row = document.createElement('div'); row.className = 'tv';
+      const label = document.createElement('span'); label.textContent = 'TV · ' + ip;
+      const b = document.createElement('button'); b.className = 'primary'; b.textContent = 'Questa';
+      b.onclick = () => connect(ip);
+      row.append(label, b); $('found').append(row);
+    });
+  } catch (e) { status('st2', e.message, 'err'); }
+}
+$('rescan').onclick = scan;
+$('useManual').onclick = () => { const ip = $('manual').value.trim(); if (ip) connect(ip); };
+
+async function connect(ip) {
+  tv = ip; localStorage.setItem('tv', ip);
+  show('s3', 3);
+  for (let i = 0; i < 60; i++) {
+    try {
+      const r = await api('/api/connect', { ip });
+      if (r.state === 'device') {
+        $('tvname').textContent = 'Collegata: ' + (r.name || 'TV') + ' (' + ip + ').';
+        show('s4', 4); return;
+      }
+      if (r.state === 'offline' && i > 4) status('st3', 'La TV non risponde: controlla che il Debug USB sia attivo e che l\'indirizzo sia giusto.', 'err');
+    } catch (e) { status('st3', e.message, 'err'); }
+    await new Promise(res => setTimeout(res, 2000));
+  }
+  show('s2', 2); status('st2', 'Non è arrivata la conferma dalla TV. Riprova.', 'err');
+}
+
+$('install').onclick = async () => {
+  $('install').disabled = true;
+  status('st4', 'Installo e configuro Irbas TV…', '', true);
+  try { await api('/api/install', { ip: tv, hide: $('hide').checked }); show('s5', 4); }
+  catch (e) { status('st4', e.message, 'err'); }
+  $('install').disabled = false;
+};
+
+$('close').onclick = async () => { try { await api('/api/quit'); } catch (e) {} window.close(); document.body.innerHTML = '<main><h1>Fatto ✓</h1><p class="sub">Puoi chiudere questa pagina e la finestra nera.</p></main>'; };
+
+$('toRestore').onclick = () => { show('sr', 0); $('title').textContent = 'Ripristina la TV'; $('subtitle').textContent = 'Serve che il debug USB sia ancora attivo sulla TV.'; };
+$('restore').onclick = async () => {
+  const ip = $('rip').value.trim(); if (!ip) return;
+  $('restore').disabled = true;
+  status('str', 'Prima preparo gli strumenti…', '', true);
+  try {
+    await api('/api/prepare');
+    status('str', 'Mi collego alla TV (se compare «Consentire il debug?», premi Consenti)…', '', true);
+    let ok = false;
+    for (let i = 0; i < 30 && !ok; i++) { const r = await api('/api/connect', { ip }); ok = r.state === 'device'; if (!ok) await new Promise(res => setTimeout(res, 2000)); }
+    if (!ok) throw new Error('La TV non ha confermato il collegamento.');
+    await api('/api/restore', { ip });
+    status('str', 'Fatto: la TV è tornata com\'era.', 'ok');
+  } catch (e) { status('str', e.message, 'err'); }
+  $('restore').disabled = false;
+};
+
+if (tv) { $('manual').value = tv; $('rip').value = tv; }
+if (location.hash === '#ripristina') $('toRestore').onclick(); else show('s1', 1);
+</script>
+</body>
+</html>
