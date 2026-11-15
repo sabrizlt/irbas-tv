@@ -129,4 +129,5 @@ public class HomeKeyService extends AccessibilityService {
             default: return 0;
         }
     }
+    @Override public void onInterrupt() {}
 }
